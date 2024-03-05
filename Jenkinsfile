@@ -22,18 +22,30 @@ pipeline {
                 }
             }
         }
-        
-        
-        stage('Deploy to k8s'){
-            when{ expression {env.GIT_BRANCH == 'origin/master'}}
+        stage("ssh into k8s-master") {
             steps{
-                script{
-                     kubernetesDeploy (configs: 'deploymentservice.yaml' ,kubeconfigId: 'k8sconfigpwd')
-                         sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.81.214"
-                         sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.81.214"
+                def remote=[:]
+                remote.name='k8s-master'
+                remote.host=''
+                remote.user='ubuntu'
+                remote.Password='ubuntu'
+                remote.allowAnyHosts=true
+            }
+        }
+         stage('deployment') { 
+             steps{
+                 sshPut remote: remote, from: 'deploymentservice.yaml', into '.' 
+             }
+        }
+        
+        stage('Deploy to k8s') {
+            steps{
+                sshCommand remote: remote, command: 'kubectl apply -f deploymentservice.yaml'
+        
+            
                    
                 }
             }
         }
     }
-}
+
