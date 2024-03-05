@@ -29,6 +29,8 @@ pipeline {
             steps{
                 script{
                      kubernetesDeploy (configs: 'deploymentservice.yaml' ,kubeconfigId: 'k8sconfigpwd')
+                         sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.81.214"
+                         sh "ssh -o StrictHostKeyChecking=no ubuntu@172.31.81.214"
                    
                 }
             }
