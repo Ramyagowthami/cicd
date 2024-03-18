@@ -8,7 +8,7 @@ pipeline {
         }
        stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv(credentialsId: 'sonar', installationName: 'Sonar') {
+                withSonarQubeEnv(credentialsId: 'sonar', installationName: 'jenkins') {
                     sh "mvn clean verify sonar:sonar -Dsonar.projectKey=nodetodo"
                 }
             }
