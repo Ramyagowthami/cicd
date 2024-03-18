@@ -10,7 +10,8 @@ pipeline {
         stage('sonarqubeanalysis'){
             steps{
                 withSonarQubeEnv('sonar'){
-                        sh 'cd /var/lib/jenkis/workspace/target/devops-integration.jar && mvn sonar:sonar'
+                        dir ("./devops-integration.jar") 
+                        sh 'mvn sonar:sonar'
                 }
             }
         }
