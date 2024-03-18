@@ -11,7 +11,7 @@ pipeline {
             steps{
                 withSonarQubeEnv('testsonarqube'){
                     dir ("target/devops.integration.jar"){
-                        sh 'mvn sonar:sonar
+                        sh 'mvn sonar:sonar'
                     }
                 }
             }
