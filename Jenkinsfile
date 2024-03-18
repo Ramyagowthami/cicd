@@ -9,12 +9,40 @@ pipeline {
         }
         stage('sonarqubeanalysis'){
             steps{
-                withSonarQubeEnv('testsonarqube'){
+                withSonarQubeEnv('sonar'){
                     dir ("target/devops.integration.jar"){
                         sh 'mvn sonar:sonar'
                     }
                 }
             }
         }
-    }
+        
+        stage('Build docker image'){
+            steps{
+                script{
+                    sh 'docker build -t ramyabharath/CICDproject:v2 .'
+                }
+            }
+        }
+          stage('Docker login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    sh "echo $PASS | docker login -u $USER --password-stdin"
+                    sh 'docker push ramyabharath/CICDproject:v2'
+                }
+            }
+        }
+        
+          stage('Deploy to k8s'){
+            when{ expression {env.GIT_BRANCH == 'origin/master'}}
+            steps{
+                script{
+                     kubernetesDeploy (configs: 'deploymentservice.yaml' ,kubeconfigId: 'k8sconfigs-pwd')
 }
+}
+}
+}
+}
+    
+
+
