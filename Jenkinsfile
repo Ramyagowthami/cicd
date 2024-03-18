@@ -41,7 +41,7 @@ pipeline {
         stage('build Docker image'){
             steps{
                 script{
-                    sh 'docker build -t balachandravk/cicd:v11.01 .'
+                    sh 'docker build -t ramyabharath/cicd:v11.01 .'
                 }
             }
         }
