@@ -16,6 +16,20 @@ pipeline {
                 }
             }
         }
+        stage('Stage Artifacts'){
+            steps{
+                script {
+                    def server = jfrog.server 'test-jfrog'
+                    def uploadSpec = """{
+                    "files": [{
+                    "pattern": "devops-integration/target/devops-integration.jar",
+                    "target": "testCICD"
+                    }]
+                    }"""
+                    server.upload(uploadSpec)
+                }
+            }
+        }
         
         stage('Build docker image'){
             steps{
