@@ -3,14 +3,23 @@ pipeline {
     stages{
         stage('Build Maven'){
             steps{
-                git url:'https://github.com/Ramyagowthami/cicd.git/', branch: "master"
+                git url:'https://github.com/Ramyagowthami/cicd/', branch: "master"
                sh 'mvn clean install'
+            }
+        }
+        stage('sonarqubeanalysis'){
+            steps{
+                withSonarQubeEnv('testsonarqube'){
+                    dir ("target/devops.integration.jar"){
+                        sh 'mvn sonar:sonar
+                    }
+                }
             }
         }
         stage('Build docker image'){
             steps{
                 script{
-                    sh 'docker build -t ramyabharath/project:v2 .'
+                    sh 'docker build -t ramyabharath/cicd:v1 .'
                 }
             }
         }
