@@ -3,7 +3,7 @@ pipeline {
     stages{
         stage ('code checkout'){
          steps{
-             git credentialsId: 'github-pat', url: 'https://github.com/Ramyagowthami/cicd-project.git'
+             git url: 'https://github.com/Ramyagowthami/cicd-project.git'
             }   
         }
        stage('SonarQube Analysis') {
