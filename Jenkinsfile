@@ -1,20 +1,29 @@
 pipeline {
     agent any
     stages{
-        stage('Build Maven'){
-            steps{
-                git url:'https://github.com/Ramyagowthami/cicd/', branch: "master"
-               sh 'mvn clean install'
-            }
+        stage ('code checkout'){
+         steps{
+             git credentialsId: 'github-pat', url: 'https://github.com/Ramyagowthami/cicd-project.git'
+            }   
         }
-        stage('sonarqubeanalysis'){
-            steps{
-                withSonarQubeEnv('sonar'){
-                        dir ("./devops-integration.jar") 
-                        sh 'mvn sonar:sonar'
+       stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv(credentialsId: 'sonar', installationName: 'SonarQube') {
+                    sh "mvn clean verify sonar:sonar -Dsonar.projectKey=nodetodo"
                 }
             }
         }
+        stage("Quality gate") {
+            steps {
+                waitForQualityGate abortPipeline: true
+            }
+        }
+        stage('Maven Build'){
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        
         stage('Stage Artifacts'){
             steps{
                 script {
@@ -29,33 +38,35 @@ pipeline {
                 }
             }
         }
-        
-        stage('Build docker image'){
+        stage('build Docker image'){
             steps{
                 script{
-                    sh 'docker build -t ramyabharath/CICDproject:v2 .'
+                    sh 'docker build -t balachandravk/cicd:v11.01 .'
                 }
             }
         }
-          stage('Docker login') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                    sh "echo $PASS | docker login -u $USER --password-stdin"
-                    sh 'docker push ramyabharath/CICDproject:v2'
+        stage('Docker login'){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                     sh "echo $PASS | docker login -u $USER --password-stdin"
+                    sh 'docker push ramyabharath/cicd:v11.01'
                 }
+                
             }
         }
         
-          stage('Deploy to k8s'){
+        stage('Deploy to k8s'){
             when{ expression {env.GIT_BRANCH == 'origin/master'}}
             steps{
                 script{
-                     kubernetesDeploy (configs: 'deploymentservice.yaml' ,kubeconfigId: 'k8sconfigs-pwd')
+                     kubernetesDeploy (configs: 'deploymentservice.yaml' ,kubeconfigId: 'k8spwd-ssh')
+                   
+                }
+            }
+        }
+        }
 }
-}
-}
-}
-}
+        
     
 
 
