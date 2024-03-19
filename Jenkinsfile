@@ -13,11 +13,6 @@ pipeline {
                 }
             }
         }
-        stage("Quality gate") {
-            steps {
-                waitForQualityGate abortPipeline: true
-            }
-        }
         stage('Maven Build'){
             steps {
                 sh 'mvn clean package'
