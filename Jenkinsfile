@@ -27,11 +27,10 @@ pipeline {
         stage('Stage Artifacts'){
             steps{
                 script {
-                    def server = jfrog.server 'test-jfrog'
+                    def server = Artifactory.server 'jfrog'
                     def uploadSpec = """{
-                    dir ('cd /var/lib/jenkins/workspace/sonarproject/target/devops-integration.jar)
                     "files": [{
-                    "pattern": "/target/devops-integration.jar",
+                    "pattern": "/var/lib/jenkis/workspace/target/devops-integration.jar",
                     "target": "testCICD"
                     }]
                     }"""
