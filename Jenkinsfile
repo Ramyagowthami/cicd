@@ -26,7 +26,7 @@ pipeline {
                     def uploadSpec = """{
                     "files": [{
                     "pattern": "/var/lib/jenkis/workspace/target/devops-integration.jar",
-                    "target": "testCICD"
+                    "target": "testCICD/"
                     }]
                     }"""
                     server.upload(uploadSpec)
