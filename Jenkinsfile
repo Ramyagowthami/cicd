@@ -29,8 +29,9 @@ pipeline {
                 script {
                     def server = jfrog.server 'test-jfrog'
                     def uploadSpec = """{
+                    dir ('cd /var/lib/jenkins/workspace/sonarproject/target/devops-integration.jar)
                     "files": [{
-                    "pattern": "devops-integration/target/devops-integration.jar",
+                    "pattern": "/target/devops-integration.jar",
                     "target": "testCICD"
                     }]
                     }"""
