@@ -22,7 +22,7 @@ pipeline {
         stage('Stage Artifacts'){
             steps{
                 script {
-                    def server = Artifactory.server 'jfrog'
+                    def server = Artifactory.server(url:http://65.0.7.224:8082/artifactory', credentialsId: 'jfrog')
                     def uploadSpec = """{
                     "files": [{
                     "pattern": "/var/lib/jenkis/workspace/target/devops-integration.jar",
