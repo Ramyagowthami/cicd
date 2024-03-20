@@ -19,24 +19,15 @@ pipeline {
             }
         }
         
-        stage('Stage Artifacts'){
+         stage('Publish to Nexus') {
             steps{
-                script {
-                    def server = Artifactory.server(url:http://65.0.7.224:8082/artifactory', credentialsId: 'jfrog')
-                    def uploadSpec = """{
-                    "files": [{
-                    "pattern": "/var/lib/jenkis/workspace/target/devops-integration.jar",
-                    "target": "testCICD/"
-                    }]
-                    }"""
-                    server.upload(uploadSpec)
-                }
-            }
+               nexusArtifactUploader artifacts: [[artifactId: 'devops-integration', classifier: '', file: 'target/devops-integration.jar', type: 'jar']], credentialsId: 'nexus', groupId: 'com.truelearning', nexusUrl: '172.31.43.37:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'endproject', version: '0.0.1-SNAPSHOT'
+           }
         }
         stage('build Docker image'){
             steps{
                 script{
-                    sh 'docker build -t ramyabharath/cicd:v11.01.'
+                    sh 'docker build -t ramyabharath/private:t1.'
                 }
             }
         }
@@ -44,7 +35,7 @@ pipeline {
             steps{
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]){
                      sh "echo $PASS | docker login -u $USER --password-stdin"
-                    sh 'docker push ramyabharath/cicd:v11.01'
+                    sh 'docker push ramyabharath/private:t1'
                 }
                 
             }
