@@ -29,7 +29,7 @@ pipeline {
         stage('build Docker image'){
             steps{
                 script{
-                    sh 'docker build -t ramyabharath/private:t1.'
+                    sh 'docker build -t ramyabharath/private:v1 .'
                 }
             }
         }
@@ -37,7 +37,7 @@ pipeline {
             steps{
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]){
                      sh "echo $PASS | docker login -u $USER --password-stdin"
-                    sh 'docker push ramyabharath/private:t1'
+                    sh 'docker push ramyabharath/private:v1'
                 }
                 
             }
