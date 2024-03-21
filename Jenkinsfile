@@ -22,7 +22,7 @@ pipeline {
          stage('Publish to Nexus') {
             steps{  
                dir('/var/lib/jenkins/workspace/sonarproject/target') {
-               nexusArtifactUploader artifacts: [[artifactId: 'devops-integration', classifier: '', file: 'target/devops-integration.jar', type: 'jar']], credentialsId: 'nexus', groupId: 'com.truelearning', nexusUrl: '52.66.80.156:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'endproject', version: '0.0.1-SNAPSHOT'
+               nexusArtifactUploader artifacts: [[artifactId: 'devops-integration', classifier: '', file: 'devops-integration.jar', type: 'jar']], credentialsId: 'nexus', groupId: 'com.truelearning', nexusUrl: '52.66.80.156:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'endproject', version: '0.0.1-SNAPSHOT'
            }
         }
          }
