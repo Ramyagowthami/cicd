@@ -13,6 +13,13 @@ pipeline {
                 }
             }
         }
+        stage("SonarQube Quality Gates"){
+            steps{
+               timeout(time: 1, unit: "MINUTES"){
+                   waitForQualityGate abortPipeline: false
+               }
+            }
+        }
         stage('Maven Build'){
             steps {
                 sh 'mvn clean package'
